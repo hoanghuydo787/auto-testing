@@ -79,6 +79,7 @@ class ChangePasswordTestDT(TestCase):
         assert success_message.text == "Password has been changed"
         # change password the old password
         continue_button = self.driver.find_element(By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div/section/div/div[2]/form/button')
+
         continue_button.click()
 
         _ = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, 'Change password')))
