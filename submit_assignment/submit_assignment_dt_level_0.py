@@ -52,27 +52,30 @@ class SubmitAssignmentTestDT(TestCase):
         upload_a_file_button.click()
         
         import os
-        file_path =  "__init__.py"
+        file_path = "dummy.py"
         absolute_file_path = os.path.abspath(file_path)
         print(absolute_file_path)
-        file_input = self.driver.find_element(By.CSS_SELECTOR, "input[type='file']")
-        file_input.send_keys(absolute_file_path)
-        self.driver.implicitly_wait(30)
 
+        choose_file_button = self.driver.find_element(By.NAME, "repo_upload_file")
+        
+        choose_file_button.send_keys(absolute_file_path)
+        
+        # file_input = self.driver.find_element(By.CSS_SELECTOR, "input[type='file']")
+        # file_input.send_keys(absolute_file_path)
         
         wait = WebDriverWait(self.driver, 10)
-        _ = wait.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[7]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div/div/div/button')))
-        upload_this_file_button = self.driver.find_element(By.XPATH, '/html/body/div[7]/div[3]/div/div[2]/div/div/div[2]/div/div[2]/div/div/div/button')
+        # _ = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'fp-upload-btn btn-primary btn')))
+
+        # upload_this_file_button = self.driver.find_element(By.CLASS_NAME, 'fp-upload-btn btn-primary btn')
+        # upload_this_file_button = self.driver.find_element(By.CSS_SELECTOR, "button:contains('Upload this file')")
+        upload_this_file_button = self.driver.find_element(By.XPATH, "//button[text()='Upload this file']")
         upload_this_file_button.click()
-        self.driver.implicitly_wait(30)
 
         _ = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="id_submitbutton"]')))
 
         save_changes_button = self.driver.find_element(By.XPATH, '//*[@id="id_submitbutton"]')
         save_changes_button.click()
-        self.driver.implicitly_wait(30)
 
-        
         
         
 if __name__ == "__main__":
