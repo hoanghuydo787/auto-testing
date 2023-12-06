@@ -31,52 +31,172 @@ class SubmitAssignmentTestDT(TestCase):
         # find login button and click it
         login_button = self.driver.find_element(By.ID,"loginbtn")
         login_button.click()
+                            
+        self.driver.get("https://school.moodledemo.net/mod/assign/view.php?id=1188&action=editsubmission")
 
-        self.driver.get("https://school.moodledemo.net/mod/assign/view.php?id=1008&action=editsubmission")
     def tearDown(self):
         self.driver.close()
-    def test_upload_file(self):
-        # implicit wait for 10 seconds
-        self.driver.implicitly_wait(10)
 
+    def test_upload_file_invalid_type_invalid_size(self):
         self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-        self.driver.implicitly_wait(10)
+        wait = WebDriverWait(self.driver, 15)
 
-        # Locate the file input element and the drop box element
-        drop_box = self.driver.find_element(By.XPATH, "//*[starts-with(@id,'yui_3_18_1_1')]/div[1]/div[2]/div/div")
-        # Path to the file you want to upload
+        _ = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[@title='Add...']")))
+        drop_box = self.driver.find_element(By.XPATH, "//a[@title='Add...']")
         drop_box.click()
-        
+
+        _ = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Upload a file")))
         upload_a_file_button = self.driver.find_element(By.LINK_TEXT, "Upload a file")
         upload_a_file_button.click()
         
         import os
-        file_path = "dummy.py"
+        file_path = "data\\invalid_type_invalid_size.zip"
         absolute_file_path = os.path.abspath(file_path)
         print(absolute_file_path)
-
-        choose_file_button = self.driver.find_element(By.NAME, "repo_upload_file")
         
+        _ = wait.until(EC.element_to_be_clickable((By.NAME, "repo_upload_file")))
+        choose_file_button = self.driver.find_element(By.NAME, "repo_upload_file")        
         choose_file_button.send_keys(absolute_file_path)
-        
-        # file_input = self.driver.find_element(By.CSS_SELECTOR, "input[type='file']")
-        # file_input.send_keys(absolute_file_path)
-        
-        wait = WebDriverWait(self.driver, 10)
-        # _ = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'fp-upload-btn btn-primary btn')))
+        self.driver.implicitly_wait(10)
 
-        # upload_this_file_button = self.driver.find_element(By.CLASS_NAME, 'fp-upload-btn btn-primary btn')
-        # upload_this_file_button = self.driver.find_element(By.CSS_SELECTOR, "button:contains('Upload this file')")
+        _ = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Upload this file']")))
         upload_this_file_button = self.driver.find_element(By.XPATH, "//button[text()='Upload this file']")
         upload_this_file_button.click()
 
-        _ = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="id_submitbutton"]')))
+        import time
+        time.sleep(5)
 
+        # class="fp-msg-text" id="fp-msg-labelledby"
+        # message = self.driver.find_element(By.CLASS_NAME, "fp-msg-text")
+        message = self.driver.find_element(By.CLASS_NAME, "moodle-exception-message")
+        # assert message.text == 'The file invalid_type_invalid_size.zip is too large. The maximum size you can upload is 1 MB.'
+        assert message.text == 'Archive (ZIP) filetype cannot be accepted.'
+        # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # _ = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="id_submitbutton"]')))
+        # save_changes_button = self.driver.find_element(By.XPATH, '//*[@id="id_submitbutton"]')
+        # save_changes_button.click()
+
+    def test_upload_file_invalid_type_valid_size(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        wait = WebDriverWait(self.driver, 15)
+
+        _ = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[@title='Add...']")))
+        drop_box = self.driver.find_element(By.XPATH, "//a[@title='Add...']")
+        drop_box.click()
+
+        _ = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Upload a file")))
+        upload_a_file_button = self.driver.find_element(By.LINK_TEXT, "Upload a file")
+        upload_a_file_button.click()
+        
+        import os
+        file_path = "data\\invalid_type_valid_size.zip"
+        absolute_file_path = os.path.abspath(file_path)
+        print(absolute_file_path)
+        
+        _ = wait.until(EC.element_to_be_clickable((By.NAME, "repo_upload_file")))
+        choose_file_button = self.driver.find_element(By.NAME, "repo_upload_file")        
+        choose_file_button.send_keys(absolute_file_path)
+        self.driver.implicitly_wait(10)
+
+        _ = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Upload this file']")))
+        upload_this_file_button = self.driver.find_element(By.XPATH, "//button[text()='Upload this file']")
+        upload_this_file_button.click()
+
+        import time
+        time.sleep(5)
+
+        # class="fp-msg-text" id="fp-msg-labelledby"
+        # message = self.driver.find_element(By.CLASS_NAME, "fp-msg-text")
+        message = self.driver.find_element(By.CLASS_NAME, "moodle-exception-message")
+        assert message.text == 'Archive (ZIP) filetype cannot be accepted.'
+        # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # _ = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="id_submitbutton"]')))
+        # save_changes_button = self.driver.find_element(By.XPATH, '//*[@id="id_submitbutton"]')
+        # save_changes_button.click()
+
+    def test_upload_file_valid_type_invalid_size(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        wait = WebDriverWait(self.driver, 15)
+
+        _ = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[@title='Add...']")))
+        drop_box = self.driver.find_element(By.XPATH, "//a[@title='Add...']")
+        drop_box.click()
+
+        _ = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Upload a file")))
+        upload_a_file_button = self.driver.find_element(By.LINK_TEXT, "Upload a file")
+        upload_a_file_button.click()
+        
+        import os
+        file_path = "data\\valid_type_invalid_size.pdf"
+        absolute_file_path = os.path.abspath(file_path)
+        print(absolute_file_path)
+        
+        _ = wait.until(EC.element_to_be_clickable((By.NAME, "repo_upload_file")))
+        choose_file_button = self.driver.find_element(By.NAME, "repo_upload_file")        
+        choose_file_button.send_keys(absolute_file_path)
+        self.driver.implicitly_wait(10)
+
+        _ = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Upload this file']")))
+        upload_this_file_button = self.driver.find_element(By.XPATH, "//button[text()='Upload this file']")
+        upload_this_file_button.click()
+
+        import time
+        time.sleep(5)
+
+        # class="fp-msg-text" id="fp-msg-labelledby"
+        # message = self.driver.find_element(By.CLASS_NAME, "fp-msg-text")
+        message = self.driver.find_element(By.CLASS_NAME, "moodle-exception-message")
+        assert message.text == 'The file valid_type_invalid_size.pdf is too large. The maximum size you can upload is 1 MB.'
+        # self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # _ = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="id_submitbutton"]')))
+        # save_changes_button = self.driver.find_element(By.XPATH, '//*[@id="id_submitbutton"]')
+        # save_changes_button.click()
+
+    def test_upload_file_valid_type_valid_size(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+        wait = WebDriverWait(self.driver, 15)
+
+        _ = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[@title='Add...']")))
+        drop_box = self.driver.find_element(By.XPATH, "//a[@title='Add...']")
+        drop_box.click()
+
+        _ = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Upload a file")))
+        upload_a_file_button = self.driver.find_element(By.LINK_TEXT, "Upload a file")
+        upload_a_file_button.click()
+        
+        import os
+        file_path = "data\\valid_type_valid_size.pdf"
+        absolute_file_path = os.path.abspath(file_path)
+        print(absolute_file_path)
+        
+        _ = wait.until(EC.element_to_be_clickable((By.NAME, "repo_upload_file")))
+        choose_file_button = self.driver.find_element(By.NAME, "repo_upload_file")        
+        choose_file_button.send_keys(absolute_file_path)
+        self.driver.implicitly_wait(10)
+
+        _ = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[text()='Upload this file']")))
+        upload_this_file_button = self.driver.find_element(By.XPATH, "//button[text()='Upload this file']")
+        upload_this_file_button.click()
+
+        import time
+        time.sleep(5)
+
+        # class="fp-msg-text" id="fp-msg-labelledby"
+        # message = self.driver.find_element(By.CLASS_NAME, "fp-msg-text")
+        # message = self.driver.find_element(By.CLASS_NAME, "moodle-exception-message")
+        # assert message.text == 'The file valid_type_invalid_size.pdf is too large. The maximum size you can upload is 1 MB.'
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        _ = wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="id_submitbutton"]')))
         save_changes_button = self.driver.find_element(By.XPATH, '//*[@id="id_submitbutton"]')
         save_changes_button.click()
 
-        
-        
+        submission_status = self.driver.find_element(By.XPATH, '//*[@id="region-main"]/div[2]/div[2]/div/div/table/tbody/tr[1]/td')        
+        assert submission_status.text == 'Submitted for grading'
+        # print("success")
+        # time.sleep(30)
 if __name__ == "__main__":
     unittest.main()
