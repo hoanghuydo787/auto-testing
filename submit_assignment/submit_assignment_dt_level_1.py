@@ -61,7 +61,6 @@ class SubmitAssignmentTestDT(TestCase):
                 'name': 'test_upload_file_valid_type_valid_size',
                 'file_path': 'data\\valid_type_valid_size.pdf',
                 'test_case_type': 'pass',
-
             }
         ]
 
